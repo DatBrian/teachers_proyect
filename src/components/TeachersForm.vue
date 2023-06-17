@@ -24,11 +24,32 @@
             </ul>
         </div>
         <input type="checkbox" v-model="teacher.doc">Documentación entregada
-        <button>Agregar</button>
+        <button @click="handleAddTeacher()">Agregar</button>
     </section>
 
     <section>
         <h3>Listado de profesores</h3>
+        <table>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>DNI</th>
+                <th>Materias</th>
+                <th>Documentación</th>
+            </tr>
+            <tr v-for="teacher in teachers" :key="teacher.dni">
+                <th>{{ teacher.name }}</th>
+                <th>{{ teacher.surname }}</th>
+                <th>{{ teacher.dni }}</th>
+                <th>
+                    <ul>
+                        <li v-for="(subject, index) in teacher.subjects" :key="index">{{ subject }}</li>
+                    </ul>
+                </th>
+                <th v-if="teacher.doc">Documentación entregada</th>
+                <th v-else>Documentación no entregada</th>
+            </tr>
+        </table>
     </section>
 </template>
 
@@ -51,20 +72,28 @@ let teacher: Ref<ITeacher> = ref({
     doc: false
 });
 
-let teachers: Ref<Array<ITeacher>> = ref([
+let teachers: Ref<Array<ITeacher[]>> = ref([
 
 ]);
 
 let subject: Ref<string> = ref('');
 
-const handleSubject = () => {
+const handleSubject = (): void => {
     teacher.value.subjects.push(subject.value);
     subject.value = '';
 }
 
-const handleAddTeacher = () => {
-    teachers.value.push(teacher.value);
-    
+const handleAddTeacher = (): void => {
+    teachers.value.push({ ...teacher.value });
+
+    teacher.value = {
+        name: '',
+        surname: '',
+        dni: '',
+        subjects: [],
+        doc: false,
+    };
+
 }
 
 </script>
